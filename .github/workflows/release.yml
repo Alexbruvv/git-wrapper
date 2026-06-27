@@ -1,13 +1,12 @@
 name: Release
 
-# Automatically cuts a GitHub Release when package.json's version changes on
-# main. The version lives only in package.json, so a push that touches it is the
-# trigger; the `check` job then releases only if no tag exists for that version
-# yet (making re-runs and unrelated package.json edits safe no-ops).
+# Automatically cuts a GitHub Release when the version in Cargo.toml changes on
+# main: the `check` job releases only if no tag exists for that version yet,
+# then per-platform archives of the `gw` binary are cross-compiled and uploaded.
 on:
   push:
     branches: [main]
-    paths: ["package.json"]
+    paths: ["Cargo.toml"]
   workflow_dispatch: # allow manual re-runs
 
 jobs:
@@ -22,7 +21,7 @@ jobs:
           fetch-depth: 0 # need full tag history for the existence check
       - id: v
         run: |
-          version="$(jq -r .version package.json)"
+          version="$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"(.*)".*/\1/')"
           echo "version=$version" >> "$GITHUB_OUTPUT"
           if git rev-parse "v$version" >/dev/null 2>&1; then
             echo "release=false" >> "$GITHUB_OUTPUT"
@@ -32,24 +31,42 @@ jobs:
             echo "v$version is new — releasing."
           fi
 
-  release:
+  create-release:
     needs: check
     if: needs.check.outputs.release == 'true'
     runs-on: ubuntu-latest
     permissions:
-      contents: write # create the tag, release and upload assets
+      contents: write # create the tag and release
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
-      - run: bun run lint
-      - run: bun run typecheck
-      - run: bun run build && bun test
-      - run: bun run build:all # cross-compile dist/gw-<platform> binaries
       - uses: softprops/action-gh-release@v2
         with:
-          tag_name: v${{ needs.check.outputs.version }} # created if absent
-          files: dist/gw-*
+          tag_name: v${{ needs.check.outputs.version }}
           generate_release_notes: true
+
+  upload:
+    needs: [check, create-release]
+    permissions:
+      contents: write # upload release assets
+    strategy:
+      matrix:
+        include:
+          - { target: x86_64-unknown-linux-musl, os: ubuntu-latest, name: linux-x64 }
+          - { target: aarch64-unknown-linux-musl, os: ubuntu-latest, name: linux-arm64 }
+          - { target: x86_64-apple-darwin, os: macos-latest, name: darwin-x64 }
+          - { target: aarch64-apple-darwin, os: macos-latest, name: darwin-arm64 }
+          - { target: x86_64-pc-windows-msvc, os: windows-latest, name: windows-x64 }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      # Cross-compiles (via `cross` for the musl targets), archives the binary,
+      # and uploads it to the release created above.
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          bin: gw
+          target: ${{ matrix.target }}
+          archive: gw-${{ matrix.name }}
+          tar: unix
+          zip: windows
+          ref: refs/tags/v${{ needs.check.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}

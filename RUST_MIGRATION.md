@@ -142,8 +142,12 @@ ported to Rust so the same cases gate the rewrite.
    the command surface: stdout/stderr/exit identical everywhere except the
    malformed-JSON error *detail* (JSC vs serde_json wording — the `gw: error:
    <path>: invalid JSON:` framing and exit 1 match).
-7. **Release tooling + docs** — `cargo-dist` init, CI swap, README install
-   rewrite (now a ~1–2 MB binary), measure actual size.
+7. **Release tooling + docs** ✅ — replaced the Bun release workflow with a
+   hand-written matrix: a version-change `check`, a `create-release` job, and an
+   `upload` matrix that cross-compiles the five targets (musl-static Linux,
+   native macOS/Windows) and attaches per-platform archives. README install
+   rewritten for the ~300 KB Rust binary. (Workflow authored + YAML-validated;
+   cross-builds run in CI.)
 8. **Cutover** — delete Bun/TS sources, `biome.json`, `tsconfig.json`,
    `bun.lock`, `package.json`, `scripts/`; bump to `1.0.0`; merge `v1` → `main`.
 
