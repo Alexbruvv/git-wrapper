@@ -135,17 +135,21 @@ runs `git status` via passthrough.
 - `gw init`: interactive scaffold from logged-in accounts.
 - `gw --gw-help`: full help text.
 
-## Phase 5 — Tests & docs
+## Phase 5 — Tests & docs ✅
 
 - Unit tests across modules with mocked runner; one gated real-binary
-  integration test.
+  integration test (self-skips without a build).
 - README: install, `.gitwrapper` schema, examples, caveats (global state, SSH).
 
-## Phase 6 — Publish
+## Phase 6 — Publish ✅ (verified; publish itself deferred)
 
-- `npm pack` review of tarball contents.
-- First `npm publish --access public`.
-- GitHub Actions: test+build on PR, `npm publish` on version tag.
+- `npm pack` review: tarball contains only `dist/`, `bin/`, README, LICENSE,
+  package.json (16.7 kB). `.npmignore` backs up the `files` allowlist.
+- `npm publish --dry-run` passes; tarball installs into a clean prefix and the
+  `gw` binary runs (`--gw-version`, `which`).
+- GitHub Actions: `ci.yml` (build+test on Node 18/20/22), `release.yml`
+  (`npm publish` on a `vX.Y.Z` tag).
+- **Outstanding:** the actual `npm publish` — intentionally not run.
 
 ## 7. Edge cases (tracked across phases)
 

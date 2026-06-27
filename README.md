@@ -9,10 +9,10 @@ gw push            # switch to this project's gh account, then `git push`
 gw commit -m "…"   # same, then `git commit`
 ```
 
-> Status: **functional, pre-publish.** Account switching, restore, the
-> `.gitwrapper` format, and the `doctor`/`which`/`init` commands all work
-> (phases 1–4). Remaining: packaging polish and the first npm publish (phases
-> 5–6). See [PLAN.md](PLAN.md) for the roadmap.
+> Status: **complete and verified, awaiting first publish.** All behaviour,
+> tests, packaging and CI are in place (phases 1–6); the package installs and
+> runs from its tarball. Only the actual `npm publish` is outstanding. See
+> [PLAN.md](PLAN.md) for the roadmap.
 
 ## Install
 
@@ -63,9 +63,12 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 ```bash
 npm install
-npm run build
-npm test
+npm run build   # compile to dist/
+npm test        # 32 tests; the integration suite self-skips without a build
 ```
+
+CI runs build + tests on Node 18/20/22. Tagging `vX.Y.Z` triggers the release
+workflow, which publishes to npm (requires an `NPM_TOKEN` secret).
 
 ## License
 
