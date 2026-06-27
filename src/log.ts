@@ -9,13 +9,13 @@ const red = (s: string) => (useColor ? `\x1b[31m${s}\x1b[0m` : s);
 
 /** Low-key informational line (e.g. "switched to account X"). */
 export function notice(message: string): void {
-  process.stderr.write(dim(`gw: ${message}`) + "\n");
+    process.stderr.write(`${dim(`gw: ${message}`)}\n`);
 }
 
 export function warn(message: string): void {
-  process.stderr.write(yellow(`gw: warning: ${message}`) + "\n");
+    process.stderr.write(`${yellow(`gw: warning: ${message}`)}\n`);
 }
 
 export function error(message: string): void {
-  process.stderr.write(red(`gw: error: ${message}`) + "\n");
+    process.stderr.write(`${red(`gw: error: ${message}`)}\n`);
 }

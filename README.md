@@ -6,13 +6,11 @@ of `git` and stop pushing with the wrong identity.
 
 ```bash
 gw push            # switch to this project's gh account, then `git push`
-gw commit -m "…"   # same, then `git commit`
+gw commit -m "..."   # same, then `git commit`
 ```
 
-> Status: **complete and verified, awaiting first release.** Behaviour, tests,
-> and CI are in place; `gw` ships as a self-contained binary built with
-> [Bun](https://bun.sh) — no Node or Bun needed at runtime. Only cutting the
-> first GitHub Release is outstanding. See [PLAN.md](PLAN.md) for the roadmap.
+`gw` ships as a self-contained binary built with [Bun](https://bun.sh) — no
+Node or Bun needed at runtime.
 
 ## Install
 
@@ -37,11 +35,11 @@ up from your working directory):
 
 ```jsonc
 {
-  "account": "alexbruvv",            // required: gh username to switch to
-  "host": "github.com",              // optional, default "github.com"
-  "userName": "Alex Colville",       // optional: repo-local git user.name
-  "userEmail": "me@acolville.co.uk", // optional: repo-local git user.email
-  "restorePrevious": true            // optional: restore prior account after (default true)
+    "account": "alexbruvv", // required: gh username to switch to
+    "host": "github.com", // optional, default "github.com"
+    "userName": "Alex Colville", // optional: repo-local git user.name
+    "userEmail": "me@acolville.co.uk", // optional: repo-local git user.email
+    "restorePrevious": true, // optional: restore prior account after (default true)
 }
 ```
 
@@ -49,14 +47,14 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 ## Commands
 
-| Command | Description |
-|---|---|
-| `gw <git args…>` | Switch account, then run git |
-| `gw doctor` | Diagnose git/gh install and auth state |
-| `gw which` | Show the account/host resolved for the current directory |
-| `gw init` | Scaffold a `.gitwrapper` file |
-| `gw --gw-version` | Print version |
-| `gw --gw-help` | Show help |
+| Command           | Description                                              |
+| ----------------- | -------------------------------------------------------- |
+| `gw <git args…>`  | Switch account, then run git                             |
+| `gw doctor`       | Diagnose git/gh install and auth state                   |
+| `gw which`        | Show the account/host resolved for the current directory |
+| `gw init`         | Scaffold a `.gitwrapper` file                            |
+| `gw --gw-version` | Print version                                            |
+| `gw --gw-help`    | Show help                                                |
 
 ## Caveats
 
@@ -84,3 +82,4 @@ workflow, which cross-compiles binaries and attaches them to a GitHub Release.
 ## License
 
 MIT
+

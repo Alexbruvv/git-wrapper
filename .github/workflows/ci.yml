@@ -14,6 +14,7 @@ jobs:
         with:
           bun-version: latest
       - run: bun install --frozen-lockfile
+      - run: bun run lint # biome lint + format check
       - run: bun run typecheck
       - run: bun run build # compile the standalone binary
       - run: bun test # integration suite runs against the compiled binary

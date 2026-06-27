@@ -1,14 +1,14 @@
-import { runWrapped } from "./core.js";
-import { doctor } from "./commands/doctor.js";
-import { which } from "./commands/which.js";
-import { init } from "./commands/init.js";
-import * as log from "./log.js";
 // Embedded at build time by `bun build --compile`, so the standalone binary
 // carries its own version without a package.json on disk.
 import pkg from "../package.json";
+import { doctor } from "./commands/doctor.js";
+import { init } from "./commands/init.js";
+import { which } from "./commands/which.js";
+import { runWrapped } from "./core.js";
+import * as log from "./log.js";
 
 function readVersion(): string {
-  return pkg.version;
+    return pkg.version;
 }
 
 const HELP = `gw — wraps git, switching the active GitHub CLI account per project.
@@ -25,32 +25,32 @@ Anything that is not a gw meta-command is passed straight through to git.
 `;
 
 export async function main(argv: string[]): Promise<number> {
-  const [first] = argv;
+    const [first] = argv;
 
-  switch (first) {
-    case "--gw-version":
-      process.stdout.write(readVersion() + "\n");
-      return 0;
-    case "--gw-help":
-      process.stdout.write(HELP);
-      return 0;
-    case "doctor":
-      return doctor();
-    case "which":
-      return which();
-    case "init":
-      return init(argv.slice(1));
-  }
+    switch (first) {
+        case "--gw-version":
+            process.stdout.write(`${readVersion()}\n`);
+            return 0;
+        case "--gw-help":
+            process.stdout.write(HELP);
+            return 0;
+        case "doctor":
+            return doctor();
+        case "which":
+            return which();
+        case "init":
+            return init(argv.slice(1));
+    }
 
-  // Switch to the project's gh account, run git, then restore.
-  return runWrapped(argv);
+    // Switch to the project's gh account, run git, then restore.
+    return runWrapped(argv);
 }
 
 main(process.argv.slice(2))
-  .then((code) => {
-    process.exitCode = code;
-  })
-  .catch((err) => {
-    log.error(err instanceof Error ? err.message : String(err));
-    process.exitCode = 1;
-  });
+    .then((code) => {
+        process.exitCode = code;
+    })
+    .catch((err) => {
+        log.error(err instanceof Error ? err.message : String(err));
+        process.exitCode = 1;
+    });
