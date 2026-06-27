@@ -9,9 +9,10 @@ gw push            # switch to this project's gh account, then `git push`
 gw commit -m "…"   # same, then `git commit`
 ```
 
-> Status: **early development.** Phase 1 (scaffold) is complete — the binary
-> runs and passes commands through to `git`. Account switching lands in a later
-> phase. See [PLAN.md](PLAN.md) for the roadmap.
+> Status: **functional, pre-publish.** Account switching, restore, the
+> `.gitwrapper` format, and the `doctor`/`which`/`init` commands all work
+> (phases 1–4). Remaining: packaging polish and the first npm publish (phases
+> 5–6). See [PLAN.md](PLAN.md) for the roadmap.
 
 ## Install
 

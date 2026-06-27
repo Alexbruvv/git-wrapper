@@ -112,14 +112,14 @@ Stand up the project skeleton so later phases just fill in logic.
 `node bin/gw.js --gw-version` prints the version; `node bin/gw.js status`
 runs `git status` via passthrough.
 
-## Phase 2 — Config discovery & parsing
+## Phase 2 — Config discovery & parsing ✅
 
 - `config.ts`: walk-up search for `.gitwrapper`, JSON parse, schema validation
   with clear errors, defaults (`host`, `restorePrevious`).
 - `gw which` becomes real (prints resolved account + config path).
 - Unit tests for discovery (nested dirs, missing file, malformed JSON).
 
-## Phase 3 — gh integration & git passthrough
+## Phase 3 — gh integration & git passthrough ✅
 
 - `runner.ts`: mockable exec/spawn wrapper.
 - `gh.ts`: `isInstalled`, `status()` parse (accounts + active), `switch()`,
@@ -129,7 +129,7 @@ runs `git status` via passthrough.
 - Repo-local `user.name`/`user.email` application.
 - SSH-remote detection + warning.
 
-## Phase 4 — Meta-commands
+## Phase 4 — Meta-commands ✅
 
 - `gw doctor`: environment + auth diagnostics.
 - `gw init`: interactive scaffold from logged-in accounts.
