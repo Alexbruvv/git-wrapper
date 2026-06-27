@@ -20,7 +20,7 @@ Usage:
   gw <git args...>     Switch to the project's account, then run git
   gw doctor            Diagnose git/gh install and auth state
   gw which             Show the account/host resolved for this directory
-  gw init              Scaffold a .gitwrapper file
+  gw init [account]    Scaffold a .gitwrapper file
   gw --gw-version      Print gw's version
   gw --gw-help         Show this help
 
@@ -42,7 +42,7 @@ export async function main(argv: string[]): Promise<number> {
     case "which":
       return which();
     case "init":
-      return init();
+      return init(argv.slice(1));
   }
 
   // Switch to the project's gh account, run git, then restore.
