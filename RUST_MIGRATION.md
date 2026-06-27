@@ -136,9 +136,12 @@ ported to Rust so the same cases gate the rewrite.
    resolution, interactive picker, `--no-gitignore` + `.gitignore` handling),
    help; ported `doctor.test.ts` / `init.test.ts`. Shared `testutil::FakeRunner`
    extracted for the mock-runner suites. Rust port is now feature-complete.
-6. **Integration + parity** — `assert_cmd` tests mirroring
-   `integration.test.ts`; differential check: run the same arg sets through the
-   retained Bun binary and the Rust binary, diff stdout/stderr/exit code.
+6. **Integration + parity** ✅ — `assert_cmd` tests for passthrough (no-config
+   forwarding, exit-code propagation, meta-flag routing) plus the existing
+   `which`/smoke suites. Differential check run against the Bun binary across
+   the command surface: stdout/stderr/exit identical everywhere except the
+   malformed-JSON error *detail* (JSC vs serde_json wording — the `gw: error:
+   <path>: invalid JSON:` framing and exit 1 match).
 7. **Release tooling + docs** — `cargo-dist` init, CI swap, README install
    rewrite (now a ~1–2 MB binary), measure actual size.
 8. **Cutover** — delete Bun/TS sources, `biome.json`, `tsconfig.json`,
