@@ -17,7 +17,8 @@ Usage:
   gw <git args...>     Switch to the project's account, then run git
   gw doctor            Diagnose git/gh install and auth state
   gw which             Show the account/host resolved for this directory
-  gw init [account]    Scaffold a .gitwrapper file
+  gw init [account]    Scaffold a .gitwrapper file (adds it to .gitignore;
+                       pass --no-gitignore to skip)
   gw --gw-version      Print gw's version
   gw --gw-help         Show this help
 

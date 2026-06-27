@@ -70,4 +70,36 @@ describe("gw init", () => {
         const code = await init([], dir, ghRunner([]));
         expect(code).toBe(1);
     });
+
+    it("adds .gitwrapper to .gitignore by default", async () => {
+        await init(["alice"], dir, ghRunner([]));
+        const gitignore = await readFile(join(dir, ".gitignore"), "utf8");
+        expect(gitignore).toBe(".gitwrapper\n");
+    });
+
+    it("appends to an existing .gitignore, fixing a missing newline", async () => {
+        await writeFile(join(dir, ".gitignore"), "node_modules/");
+        await init(["alice"], dir, ghRunner([]));
+        const gitignore = await readFile(join(dir, ".gitignore"), "utf8");
+        expect(gitignore).toBe("node_modules/\n.gitwrapper\n");
+    });
+
+    it("does not duplicate an existing .gitignore entry", async () => {
+        await writeFile(join(dir, ".gitignore"), ".gitwrapper\n");
+        await init(["alice"], dir, ghRunner([]));
+        const gitignore = await readFile(join(dir, ".gitignore"), "utf8");
+        expect(gitignore).toBe(".gitwrapper\n");
+    });
+
+    it("skips .gitignore with --no-gitignore", async () => {
+        const code = await init(["alice", "--no-gitignore"], dir, ghRunner([]));
+        expect(code).toBe(0);
+        // config still written, but no .gitignore created
+        expect(await readFile(join(dir, ".gitwrapper"), "utf8")).toContain(
+            "alice",
+        );
+        await expect(
+            readFile(join(dir, ".gitignore"), "utf8"),
+        ).rejects.toThrow();
+    });
 });

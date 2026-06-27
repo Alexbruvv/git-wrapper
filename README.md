@@ -49,12 +49,15 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 | Command           | Description                                              |
 | ----------------- | -------------------------------------------------------- |
-| `gw <git args…>`  | Switch account, then run git                             |
-| `gw doctor`       | Diagnose git/gh install and auth state                   |
-| `gw which`        | Show the account/host resolved for the current directory |
-| `gw init`         | Scaffold a `.gitwrapper` file                            |
-| `gw --gw-version` | Print version                                            |
-| `gw --gw-help`    | Show help                                                |
+| Command                        | Description                                              |
+| ------------------------------ | -------------------------------------------------------- |
+| `gw <git args…>`               | Switch account, then run git                             |
+| `gw doctor`                    | Diagnose git/gh install and auth state                   |
+| `gw which`                     | Show the account/host resolved for the current directory |
+| `gw init [account]`            | Scaffold a `.gitwrapper` file and add it to `.gitignore` |
+| `gw init … --no-gitignore`     | Scaffold without touching `.gitignore`                   |
+| `gw --gw-version`              | Print version                                            |
+| `gw --gw-help`                 | Show help                                                |
 
 ## Caveats
 
