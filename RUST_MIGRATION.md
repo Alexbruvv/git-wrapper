@@ -148,8 +148,12 @@ ported to Rust so the same cases gate the rewrite.
    native macOS/Windows) and attaches per-platform archives. README install
    rewritten for the ~300 KB Rust binary. (Workflow authored + YAML-validated;
    cross-builds run in CI.)
-8. **Cutover** — delete Bun/TS sources, `biome.json`, `tsconfig.json`,
-   `bun.lock`, `package.json`, `scripts/`; bump to `1.0.0`; merge `v1` → `main`.
+8. **Cutover** ✅ (on `v1`; merge to `main` left for review) — deleted the Bun/TS
+   sources, tests, `package.json`, `bun.lock`, `biome.json`, `tsconfig.json`, the
+   Bun build script and CI; promoted `rust-ci.yml` → `ci.yml`; dropped the
+   crate-level `#![allow(dead_code)]` (clippy clean with it enforced); bumped to
+   `1.0.0`; rewrote the Develop docs and `.gitignore` for Rust. **The merge of
+   `v1` into `main` is intentionally left for you to review and perform.**
 
 ## Resolved decisions
 

@@ -6,15 +6,14 @@ on:
   pull_request:
 
 jobs:
-  test:
+  rust:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          bun-version: latest
-      - run: bun install --frozen-lockfile
-      - run: bun run lint # biome lint + format check
-      - run: bun run typecheck
-      - run: bun run build # compile the standalone binary
-      - run: bun test # integration suite runs against the compiled binary
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test

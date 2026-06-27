@@ -1,11 +1,5 @@
-node_modules/
 *.log
 .DS_Store
-
-# Compiled standalone binaries
-/gw
-/gw.exe
-/dist/
 
 # Rust
 /target/

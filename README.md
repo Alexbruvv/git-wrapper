@@ -66,21 +66,21 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 ## Develop
 
-Built and tested with [Bun](https://bun.sh):
+Built and tested with [Rust](https://www.rust-lang.org) (stable):
 
 ```bash
-bun install
-bun run lint           # biome check
-bun run typecheck      # tsc --noEmit
-bun run build          # compile the standalone ./gw binary
-bun test               # 36 tests; integration runs against the compiled binary
-bun run build:all      # cross-compile dist/gw-<platform> for all targets
-bun run dev -- which   # run from source without compiling
+cargo build              # debug binary at target/debug/gw
+cargo test               # unit + integration tests
+cargo clippy -- -D warnings
+cargo fmt
+cargo run -- which       # run from source
+cargo build --release    # ~1–2 MB release binary
 ```
 
-CI runs lint + typecheck + build + tests on Bun. Releases are automatic: bump
-the `version` in `package.json` and merge to `main`, and the release workflow
-tags `vX.Y.Z`, cross-compiles binaries, and attaches them to a GitHub Release.
+CI runs `cargo fmt --check`, `clippy -D warnings`, and `cargo test`. Releases are
+automatic: bump the `version` in `Cargo.toml` and merge to `main`, and the
+release workflow tags `vX.Y.Z`, cross-compiles the per-platform binaries, and
+attaches the archives to a GitHub Release.
 
 ## License
 
