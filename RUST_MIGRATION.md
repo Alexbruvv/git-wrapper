@@ -124,8 +124,10 @@ ported to Rust so the same cases gate the rewrite.
 2. **Config** ✅ — walk-up discovery, hand-rolled JSON validation (parity error
    messages) into a plain `Config`, `ConfigError`; ported `config.test.ts` as
    unit tests + `gw which` integration tests. Implemented `gw which`.
-3. **Runner + git + gh** — `Runner` trait (mockable like today), real impl;
-   git helpers and the `Gh` wrapper with JSON + text parsing; port `gh.test.ts`.
+3. **Runner + git + gh** ✅ — `Runner` trait + `RealRunner`; git helpers
+   (install/work-tree checks, local identity, origin URL, SSH detection) and the
+   `Gh` wrapper with `--json hosts` + text-fallback parsing and switch/setup-git.
+   Ported `gh.test.ts` parser cases.
 4. **Core orchestration** — `run_wrapped` (preflight → resolve → switch →
    identity → SSH warn → passthrough → restore); port `core.test.ts` with a
    fake `Runner`.

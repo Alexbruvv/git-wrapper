@@ -1,6 +1,7 @@
 use crate::commands;
 use crate::git;
 use crate::log;
+use crate::runner::RealRunner;
 
 const HELP: &str = "gw — wraps git, switching the active GitHub CLI account per project.
 
@@ -33,7 +34,7 @@ pub fn run(args: &[String]) -> i32 {
         Some("init") => commands::init::init(&args[1..]),
         // Switch to the project's gh account, run git, then restore. Account
         // switching arrives in a later phase; today this is pure passthrough.
-        _ => match git::run_git(args) {
+        _ => match git::run_git(args, &RealRunner) {
             Ok(code) => code,
             Err(err) => {
                 log::error(&format!("failed to run git: {err}"));
