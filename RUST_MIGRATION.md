@@ -46,7 +46,7 @@ ported to Rust so the same cases gate the rewrite.
 | `src/config.ts` | `src/config.rs` | serde structs + walk-up discovery + `ConfigError` |
 | `src/gh.ts` | `src/gh.rs` | `Gh` over a `Runner`; serde for `--json hosts`; text fallback |
 | `src/git.ts` | `src/git.rs` | passthrough spawn, install/work-tree checks, identity, SSH detect |
-| `src/core.ts` | `src/core.rs` | `run_wrapped` orchestration |
+| `src/core.ts` | `src/app.rs` | `run_wrapped` orchestration (renamed to avoid shadowing the std `core` crate) |
 | `src/commands/{doctor,which,init}.ts` | `src/commands/{doctor,which,init}.rs` | one module each |
 | `src/log.ts` | `src/log.rs` | stderr `notice`/`warn`/`error`, `NO_COLOR`-aware |
 | `test/*.test.ts` | `tests/*.rs` + `#[cfg(test)]` | integration via `assert_cmd`; units inline |
@@ -118,7 +118,7 @@ ported to Rust so the same cases gate the rewrite.
 
 ## Phased plan (each phase ends green: builds, clippy-clean, tests pass)
 
-1. **Scaffold** — `cargo init --name gw`, `Cargo.toml` (deps + release
+1. **Scaffold** ✅ — `cargo init --name gw`, `Cargo.toml` (deps + release
    profile), `rustfmt.toml`, `clippy` in CI skeleton, module stubs, a `main`
    that routes `--gw-version`/`--gw-help` and passes everything else to `git`.
 2. **Config** — serde structs, walk-up discovery, `ConfigError`; port
@@ -138,19 +138,23 @@ ported to Rust so the same cases gate the rewrite.
 8. **Cutover** — delete Bun/TS sources, `biome.json`, `tsconfig.json`,
    `bun.lock`, `package.json`, `scripts/`; bump to `1.0.0`; merge `v1` → `main`.
 
-## Open questions
+## Resolved decisions
 
-1. **Arg routing:** hand-rolled match (recommended) vs. `clap` with external
-   subcommands?
-2. **MSRV / toolchain pin** and whether to commit `Cargo.lock` (yes for a
-   binary).
-3. **musl static Linux builds** (portable, recommended) vs. glibc?
-4. **`cargo-dist`** for releases vs. a hand-written Actions matrix?
-5. Keep the package name/scope identity (`@acolville/gw` was npm-only; the Rust
-   crate/binary is just `gw`) — any crates.io publish, or GitHub Releases only?
+1. **Arg routing — hand-rolled `match`.** No `clap`. `gw`'s routing is tiny and
+   transparent passthrough must be exact; a parser only adds edge cases (e.g.
+   `gw --version` vs `gw --gw-version`, `gw push -f`). Matches the project's
+   existing no-arg-parser-library choice on the TS side.
+2. **Pinned toolchain + committed `Cargo.lock`.** `rust-version` set in
+   `Cargo.toml`; `Cargo.lock` committed (it's a binary).
+3. **musl-static Linux builds** for the two Linux targets (portable, no glibc
+   version coupling); native dynamic for macOS/Windows.
+4. **Hand-written GitHub Actions matrix** for releases — not `cargo-dist`. Keeps
+   the repo's minimal, no-extra-tooling style and stays close to the existing
+   hand-written release workflow.
+5. **Binary is `gw`; GitHub Releases only, no crates.io publish** (it's an app,
+   not a library). Licensed **GPL-3.0-or-later** to match `LICENSE`.
 
 ## Prerequisites
 
-- Rust toolchain (`rustup`) — **not currently installed** on this machine;
-  needed before Phase 1.
-- `cross` (or Docker) for Linux cross-builds from macOS.
+- Rust toolchain via `rustup` (stable) with `clippy` + `rustfmt` — **installed**.
+- `cross` (or Docker) for Linux cross-builds from macOS (release phase).
