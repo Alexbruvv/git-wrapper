@@ -1,0 +1,51 @@
+{
+  "name": "@acolville/gw",
+  "version": "0.1.0",
+  "description": "Wraps git to auto-switch the active GitHub CLI account per project before running a command.",
+  "keywords": [
+    "git",
+    "github",
+    "gh",
+    "cli",
+    "auth",
+    "account",
+    "wrapper"
+  ],
+  "homepage": "https://github.com/alexbruvv/git-wrapper#readme",
+  "bugs": {
+    "url": "https://github.com/alexbruvv/git-wrapper/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexbruvv/git-wrapper.git"
+  },
+  "license": "MIT",
+  "author": "Alex Colville <me@acolville.co.uk>",
+  "type": "module",
+  "bin": {
+    "gw": "bin/gw.js"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.4.0"
+  }
+}
