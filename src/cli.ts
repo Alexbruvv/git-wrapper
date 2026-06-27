@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { runGit } from "./git.js";
+import { runWrapped } from "./core.js";
 import { doctor } from "./commands/doctor.js";
 import { which } from "./commands/which.js";
 import { init } from "./commands/init.js";
@@ -45,9 +45,8 @@ export async function main(argv: string[]): Promise<number> {
       return init();
   }
 
-  // Phase 1: pure passthrough (account switching arrives in phase 3).
-  // Empty invocation behaves like bare `git`.
-  return runGit(argv);
+  // Switch to the project's gh account, run git, then restore.
+  return runWrapped(argv);
 }
 
 main(process.argv.slice(2))
