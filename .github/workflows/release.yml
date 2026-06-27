@@ -1,16 +1,43 @@
 name: Release
 
-# Builds standalone `gw` binaries for every supported platform and attaches them
-# to a GitHub Release when a version tag (vX.Y.Z) is pushed.
+# Automatically cuts a GitHub Release when package.json's version changes on
+# main. The version lives only in package.json, so a push that touches it is the
+# trigger; the `check` job then releases only if no tag exists for that version
+# yet (making re-runs and unrelated package.json edits safe no-ops).
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
+    paths: ["package.json"]
+  workflow_dispatch: # allow manual re-runs
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+      release: ${{ steps.v.outputs.release }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # need full tag history for the existence check
+      - id: v
+        run: |
+          version="$(jq -r .version package.json)"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if git rev-parse "v$version" >/dev/null 2>&1; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "v$version already released — skipping."
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "v$version is new — releasing."
+          fi
+
   release:
+    needs: check
+    if: needs.check.outputs.release == 'true'
     runs-on: ubuntu-latest
     permissions:
-      contents: write # create the release and upload assets
+      contents: write # create the tag, release and upload assets
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -23,5 +50,6 @@ jobs:
       - run: bun run build:all # cross-compile dist/gw-<platform> binaries
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: v${{ needs.check.outputs.version }} # created if absent
           files: dist/gw-*
           generate_release_notes: true

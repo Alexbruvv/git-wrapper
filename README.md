@@ -72,15 +72,17 @@ Built and tested with [Bun](https://bun.sh):
 
 ```bash
 bun install
+bun run lint           # biome check
 bun run typecheck      # tsc --noEmit
 bun run build          # compile the standalone ./gw binary
-bun test               # 32 tests; integration runs against the compiled binary
+bun test               # 36 tests; integration runs against the compiled binary
 bun run build:all      # cross-compile dist/gw-<platform> for all targets
 bun run dev -- which   # run from source without compiling
 ```
 
-CI runs typecheck + build + tests on Bun. Tagging `vX.Y.Z` triggers the release
-workflow, which cross-compiles binaries and attaches them to a GitHub Release.
+CI runs lint + typecheck + build + tests on Bun. Releases are automatic: bump
+the `version` in `package.json` and merge to `main`, and the release workflow
+tags `vX.Y.Z`, cross-compiles binaries, and attaches them to a GitHub Release.
 
 ## License
 
