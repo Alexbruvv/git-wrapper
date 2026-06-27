@@ -132,8 +132,10 @@ ported to Rust so the same cases gate the rewrite.
    identity → SSH warn → passthrough → restore), wired into the CLI; ported
    `core.test.ts` with a fake `Runner`. Verified live: switch + restore through
    the Rust binary matches the Bun behaviour.
-5. **Meta-commands** — `doctor`, `init` (incl. `--no-gitignore` + `.gitignore`
-   handling), help; port `doctor.test.ts` / `init.test.ts`.
+5. **Meta-commands** ✅ — `doctor` (testable line-builder) and `init` (account
+   resolution, interactive picker, `--no-gitignore` + `.gitignore` handling),
+   help; ported `doctor.test.ts` / `init.test.ts`. Shared `testutil::FakeRunner`
+   extracted for the mock-runner suites. Rust port is now feature-complete.
 6. **Integration + parity** — `assert_cmd` tests mirroring
    `integration.test.ts`; differential check: run the same arg sets through the
    retained Bun binary and the Rust binary, diff stdout/stderr/exit code.

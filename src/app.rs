@@ -115,83 +115,10 @@ fn passthrough(args: &[String], runner: &dyn Runner) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::types::RunResult;
-    use std::cell::RefCell;
+    use crate::testutil::{argv, FakeRunner};
     use std::fs;
-    use std::io;
     use std::path::Path;
     use tempfile::tempdir;
-
-    /// Runner that returns canned capture results and records calls.
-    struct FakeRunner {
-        accounts_json: String,
-        origin_url: String,
-        git_code: i32,
-        captures: RefCell<Vec<Vec<String>>>,
-        passthroughs: RefCell<Vec<Vec<String>>>,
-        switches: RefCell<Vec<String>>,
-    }
-
-    impl FakeRunner {
-        fn new(accounts: &[(&str, bool)]) -> Self {
-            let entries: Vec<String> = accounts
-                .iter()
-                .map(|(u, a)| format!(r#"{{"login":"{u}","host":"github.com","active":{a}}}"#))
-                .collect();
-            let accounts_json = format!(r#"{{"hosts":{{"github.com":[{}]}}}}"#, entries.join(","));
-            Self {
-                accounts_json,
-                origin_url: "https://github.com/acme/repo.git".to_string(),
-                git_code: 0,
-                captures: RefCell::new(Vec::new()),
-                passthroughs: RefCell::new(Vec::new()),
-                switches: RefCell::new(Vec::new()),
-            }
-        }
-    }
-
-    impl Runner for FakeRunner {
-        fn capture(&self, cmd: &str, args: &[&str]) -> io::Result<RunResult> {
-            let mut full = vec![cmd.to_string()];
-            full.extend(args.iter().map(|s| s.to_string()));
-            self.captures.borrow_mut().push(full);
-
-            let ok = |s: &str| -> io::Result<RunResult> {
-                Ok(RunResult {
-                    code: 0,
-                    stdout: s.to_string(),
-                    stderr: String::new(),
-                })
-            };
-            match (cmd, args.join(" ").as_str()) {
-                ("git", "--version") => ok("git version 2.0"),
-                ("git", "rev-parse --is-inside-work-tree") => ok("true"),
-                ("git", "remote get-url origin") => ok(&self.origin_url),
-                ("gh", "--version") => ok("gh version 2.0"),
-                ("gh", "auth status --json hosts") => ok(&self.accounts_json),
-                ("gh", s) if s.starts_with("auth switch") => {
-                    if let Some(i) = args.iter().position(|a| *a == "--user") {
-                        if let Some(u) = args.get(i + 1) {
-                            self.switches.borrow_mut().push((*u).to_string());
-                        }
-                    }
-                    ok("")
-                }
-                _ => ok(""),
-            }
-        }
-
-        fn passthrough(&self, cmd: &str, args: &[&str]) -> io::Result<i32> {
-            let mut full = vec![cmd.to_string()];
-            full.extend(args.iter().map(|s| s.to_string()));
-            self.passthroughs.borrow_mut().push(full);
-            Ok(self.git_code)
-        }
-    }
-
-    fn argv(parts: &[&str]) -> Vec<String> {
-        parts.iter().map(|s| s.to_string()).collect()
-    }
 
     fn write_config(dir: &Path, json: &str) {
         fs::write(dir.join(".gitwrapper"), json).unwrap();

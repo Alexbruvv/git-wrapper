@@ -11,6 +11,8 @@ mod gh;
 mod git;
 mod log;
 mod runner;
+#[cfg(test)]
+mod testutil;
 mod types;
 
 fn main() {
