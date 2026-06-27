@@ -1,6 +1,6 @@
 {
     "name": "@acolville/gw",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Wraps git to auto-switch the active GitHub CLI account per project before running a command.",
     "keywords": [
         "git",
@@ -40,3 +40,4 @@
         "typescript": "^5.4.0"
     }
 }
+

@@ -47,8 +47,8 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 ## Commands
 
-| Command           | Description                                              |
-| ----------------- | -------------------------------------------------------- |
+| Command                        | Description                                              |
+| ------------------------------ | -------------------------------------------------------- |
 | Command                        | Description                                              |
 | ------------------------------ | -------------------------------------------------------- |
 | `gw <git args…>`               | Switch account, then run git                             |
@@ -86,5 +86,5 @@ tags `vX.Y.Z`, cross-compiles binaries, and attaches them to a GitHub Release.
 
 ## License
 
-MIT
+GPL
 
