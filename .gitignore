@@ -6,3 +6,6 @@ node_modules/
 /gw
 /gw.exe
 /dist/
+
+# Rust
+/target/

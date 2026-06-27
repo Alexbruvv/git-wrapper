@@ -1,0 +1,31 @@
+[package]
+name = "gw"
+version = "0.1.1"
+edition = "2021"
+rust-version = "1.74"
+description = "Wraps git to auto-switch the active GitHub CLI account per project before running a command."
+repository = "https://github.com/Alexbruvv/git-wrapper"
+license = "GPL-3.0-or-later"
+
+[[bin]]
+name = "gw"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+thiserror = "1"
+
+[dev-dependencies]
+assert_cmd = "2"
+predicates = "3"
+tempfile = "3"
+
+# Optimise the release binary for size — the whole point of the Rust port.
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
