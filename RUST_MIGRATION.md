@@ -121,8 +121,9 @@ ported to Rust so the same cases gate the rewrite.
 1. **Scaffold** ✅ — `cargo init --name gw`, `Cargo.toml` (deps + release
    profile), `rustfmt.toml`, `clippy` in CI skeleton, module stubs, a `main`
    that routes `--gw-version`/`--gw-help` and passes everything else to `git`.
-2. **Config** — serde structs, walk-up discovery, `ConfigError`; port
-   `config.test.ts`. Implement `gw which`.
+2. **Config** ✅ — walk-up discovery, hand-rolled JSON validation (parity error
+   messages) into a plain `Config`, `ConfigError`; ported `config.test.ts` as
+   unit tests + `gw which` integration tests. Implemented `gw which`.
 3. **Runner + git + gh** — `Runner` trait (mockable like today), real impl;
    git helpers and the `Gh` wrapper with JSON + text parsing; port `gh.test.ts`.
 4. **Core orchestration** — `run_wrapped` (preflight → resolve → switch →
