@@ -1,27 +1,26 @@
 name: Release
 
-# Publishes to npm when a version tag (vX.Y.Z) is pushed. Requires an
-# NPM_TOKEN secret with publish rights to the @acolville scope.
+# Builds standalone `gw` binaries for every supported platform and attaches them
+# to a GitHub Release when a version tag (vX.Y.Z) is pushed.
 on:
   push:
     tags: ["v*"]
 
 jobs:
-  publish:
+  release:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write # npm provenance
+      contents: write # create the release and upload assets
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: oven-sh/setup-bun@v2
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
-      - run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run build && bun test
+      - run: bun run build:all # cross-compile dist/gw-<platform> binaries
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/gw-*
+          generate_release_notes: true

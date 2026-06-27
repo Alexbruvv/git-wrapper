@@ -1,6 +1,9 @@
 node_modules/
 .claude/settings.local.json
-dist/
 *.log
 .DS_Store
-coverage/
+
+# Compiled standalone binaries
+/gw
+/gw.exe
+/dist/

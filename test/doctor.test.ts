@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, spyOn } from "bun:test";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -30,10 +30,10 @@ const ok = (stdout: string): RunResult => ({ code: 0, stdout, stderr: "" });
 
 describe("gw doctor", () => {
   let dir: string;
-  let writeSpy: ReturnType<typeof vi.spyOn>;
+  let writeSpy: ReturnType<typeof spyOn<typeof process.stdout, "write">>;
   beforeEach(async () => {
     dir = await mkdtemp(join(tmpdir(), "gw-doctor-"));
-    writeSpy = vi.spyOn(process.stdout, "write").mockReturnValue(true);
+    writeSpy = spyOn(process.stdout, "write").mockReturnValue(true);
   });
   afterEach(async () => {
     writeSpy.mockRestore();

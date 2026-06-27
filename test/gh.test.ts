@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { parseJsonStatus, parseTextStatus } from "../src/gh.js";
 
 const JSON_OUT = JSON.stringify({

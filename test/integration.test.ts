@@ -1,22 +1,22 @@
-import { describe, it, expect, beforeAll } from "vitest";
+import { describe, it, expect, beforeAll } from "bun:test";
 import { spawn } from "node:child_process";
 import { mkdtemp, writeFile, rm } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 
-// Exercises the actual compiled bin via a child process. Requires a build, so
-// it self-skips when dist is absent (e.g. running tests before `npm run build`).
-const BIN = resolve(fileURLToPath(import.meta.url), "..", "..", "bin", "gw.js");
-const built = existsSync(resolve(fileURLToPath(import.meta.url), "..", "..", "dist", "cli.js"));
+// Exercises the actual compiled standalone binary. Requires `bun run build`, so
+// it self-skips when the binary is absent.
+const BIN = resolve(import.meta.dir, "..", "gw");
+const built = existsSync(BIN);
 
 function run(
   args: string[],
   cwd: string,
 ): Promise<{ code: number; stdout: string; stderr: string }> {
   return new Promise((res, rej) => {
-    const child = spawn(process.execPath, [BIN, ...args], { cwd });
+    // Run the standalone binary directly — no Node or Bun runtime needed.
+    const child = spawn(BIN, args, { cwd });
     let stdout = "";
     let stderr = "";
     child.stdout.on("data", (d) => (stdout += d));

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect } from "bun:test";
 import { realRunner } from "../src/runner.js";
 import { runGit } from "../src/git.js";
 

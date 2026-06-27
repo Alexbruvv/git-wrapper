@@ -23,6 +23,12 @@ The project's account is declared in a per-project `.gitwrapper` file.
 - **Restore previous account after the command:** default **on**.
 - **SSH remote key switching:** deferred to v2. v1 detects SSH remotes and warns
   that gh switching only covers HTTPS credentials.
+- **Toolchain & distribution:** [Bun](https://bun.sh). `bun install` for deps,
+  `bun test` (built-in runner, no vitest), `tsc --noEmit` for typecheck. Ships as
+  a self-contained executable via `bun build --compile` (`bun run build` →
+  `./gw`; `bun run build:all` → `dist/gw-<platform>`), distributed through
+  GitHub Releases rather than npm. No Node or Bun needed at runtime. The version
+  is embedded at build time via a bundled `package.json` import.
 
 ## 3. How account switching works
 
@@ -90,7 +96,9 @@ so commits are attributed correctly too.
 
 ## Phase 1 — Scaffold ✅ (this phase)
 
-Stand up the project skeleton so later phases just fill in logic.
+Stand up the project skeleton so later phases just fill in logic. (Originally
+scaffolded on a Node/npm/vitest/tsc toolchain; later migrated to Bun — see
+Resolved decisions. The bullets below describe the original scaffold.)
 
 - `package.json`: name `@acolville/gw`, `"type": "module"`, `bin.gw`,
   `engines.node >=18`, `files`, scripts (`build`, `dev`, `test`, `lint`,
@@ -141,15 +149,15 @@ runs `git status` via passthrough.
   integration test (self-skips without a build).
 - README: install, `.gitwrapper` schema, examples, caveats (global state, SSH).
 
-## Phase 6 — Publish ✅ (verified; publish itself deferred)
+## Phase 6 — Release ✅ (verified; release itself deferred)
 
-- `npm pack` review: tarball contains only `dist/`, `bin/`, README, LICENSE,
-  package.json (16.7 kB). `.npmignore` backs up the `files` allowlist.
-- `npm publish --dry-run` passes; tarball installs into a clean prefix and the
-  `gw` binary runs (`--gw-version`, `which`).
-- GitHub Actions: `ci.yml` (build+test on Node 18/20/22), `release.yml`
-  (`npm publish` on a `vX.Y.Z` tag).
-- **Outstanding:** the actual `npm publish` — intentionally not run.
+- `bun run build` compiles a 61 MB standalone `gw` (Mach-O arm64 here); runs with
+  no Node/Bun present (`--gw-version`, `--gw-help`, real switch/restore).
+- `bun run build:all` cross-compiles all five targets into `dist/`
+  (linux x64/arm64, darwin x64/arm64, windows x64).
+- GitHub Actions: `ci.yml` (typecheck + build + `bun test` on Bun), `release.yml`
+  (cross-compile + attach binaries to a GitHub Release on a `vX.Y.Z` tag).
+- **Outstanding:** cutting the first release tag — intentionally not done.
 
 ## 7. Edge cases (tracked across phases)
 

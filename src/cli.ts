@@ -1,17 +1,14 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
 import { runWrapped } from "./core.js";
 import { doctor } from "./commands/doctor.js";
 import { which } from "./commands/which.js";
 import { init } from "./commands/init.js";
 import * as log from "./log.js";
+// Embedded at build time by `bun build --compile`, so the standalone binary
+// carries its own version without a package.json on disk.
+import pkg from "../package.json";
 
 function readVersion(): string {
-  // dist/cli.js → ../package.json
-  const here = dirname(fileURLToPath(import.meta.url));
-  const pkg = JSON.parse(readFileSync(join(here, "..", "package.json"), "utf8"));
-  return pkg.version as string;
+  return pkg.version;
 }
 
 const HELP = `gw — wraps git, switching the active GitHub CLI account per project.

@@ -9,15 +9,21 @@ gw push            # switch to this project's gh account, then `git push`
 gw commit -m "…"   # same, then `git commit`
 ```
 
-> Status: **complete and verified, awaiting first publish.** All behaviour,
-> tests, packaging and CI are in place (phases 1–6); the package installs and
-> runs from its tarball. Only the actual `npm publish` is outstanding. See
-> [PLAN.md](PLAN.md) for the roadmap.
+> Status: **complete and verified, awaiting first release.** Behaviour, tests,
+> and CI are in place; `gw` ships as a self-contained binary built with
+> [Bun](https://bun.sh) — no Node or Bun needed at runtime. Only cutting the
+> first GitHub Release is outstanding. See [PLAN.md](PLAN.md) for the roadmap.
 
 ## Install
 
+`gw` is distributed as a standalone executable per platform. Download the one
+for your OS/arch from the [Releases](https://github.com/alexbruvv/git-wrapper/releases)
+page, mark it executable, and put it on your `PATH`:
+
 ```bash
-npm install -g @acolville/gw
+# example: macOS arm64
+curl -L -o gw https://github.com/alexbruvv/git-wrapper/releases/latest/download/gw-darwin-arm64
+chmod +x gw && mv gw /usr/local/bin/gw
 ```
 
 Requires [`git`](https://git-scm.com) and the
@@ -61,14 +67,19 @@ When no `.gitwrapper` is found, `gw` is a transparent passthrough to `git`.
 
 ## Develop
 
+Built and tested with [Bun](https://bun.sh):
+
 ```bash
-npm install
-npm run build   # compile to dist/
-npm test        # 32 tests; the integration suite self-skips without a build
+bun install
+bun run typecheck      # tsc --noEmit
+bun run build          # compile the standalone ./gw binary
+bun test               # 32 tests; integration runs against the compiled binary
+bun run build:all      # cross-compile dist/gw-<platform> for all targets
+bun run dev -- which   # run from source without compiling
 ```
 
-CI runs build + tests on Node 18/20/22. Tagging `vX.Y.Z` triggers the release
-workflow, which publishes to npm (requires an `NPM_TOKEN` secret).
+CI runs typecheck + build + tests on Bun. Tagging `vX.Y.Z` triggers the release
+workflow, which cross-compiles binaries and attaches them to a GitHub Release.
 
 ## License
 

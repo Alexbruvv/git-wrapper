@@ -9,7 +9,8 @@
     "cli",
     "auth",
     "account",
-    "wrapper"
+    "wrapper",
+    "bun"
   ],
   "homepage": "https://github.com/alexbruvv/git-wrapper#readme",
   "bugs": {
@@ -22,30 +23,17 @@
   "license": "MIT",
   "author": "Alex Colville <me@acolville.co.uk>",
   "type": "module",
-  "bin": {
-    "gw": "bin/gw.js"
-  },
-  "files": [
-    "dist",
-    "bin"
-  ],
-  "engines": {
-    "node": ">=18"
-  },
+  "module": "src/cli.ts",
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "lint": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
-  },
-  "publishConfig": {
-    "access": "public"
+    "dev": "bun run src/cli.ts",
+    "build": "bun build ./src/cli.ts --compile --outfile gw",
+    "build:all": "bun run scripts/build-all.ts",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "typescript": "^5.4.0",
-    "vitest": "^1.4.0"
+    "@types/bun": "^1.1.0",
+    "typescript": "^5.4.0"
   }
 }
