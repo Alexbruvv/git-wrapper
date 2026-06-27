@@ -128,9 +128,10 @@ ported to Rust so the same cases gate the rewrite.
    (install/work-tree checks, local identity, origin URL, SSH detection) and the
    `Gh` wrapper with `--json hosts` + text-fallback parsing and switch/setup-git.
    Ported `gh.test.ts` parser cases.
-4. **Core orchestration** — `run_wrapped` (preflight → resolve → switch →
-   identity → SSH warn → passthrough → restore); port `core.test.ts` with a
-   fake `Runner`.
+4. **Core orchestration** ✅ — `run_wrapped` (preflight → resolve → switch →
+   identity → SSH warn → passthrough → restore), wired into the CLI; ported
+   `core.test.ts` with a fake `Runner`. Verified live: switch + restore through
+   the Rust binary matches the Bun behaviour.
 5. **Meta-commands** — `doctor`, `init` (incl. `--no-gitignore` + `.gitignore`
    handling), help; port `doctor.test.ts` / `init.test.ts`.
 6. **Integration + parity** — `assert_cmd` tests mirroring
