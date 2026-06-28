@@ -28,6 +28,11 @@ Requires [`git`](https://git-scm.com) and the
 [GitHub CLI (`gh`)](https://cli.github.com) on your `PATH`, with each account
 logged in via `gh auth login`.
 
+### Mise
+
+You can use [Mise](https://mise.jdx.dev/) to install git-wrapper easily.
+Run `mise use -g github:alexbruvv/git-wrapper`
+
 ## `.gitwrapper`
 
 Place a `.gitwrapper` file at the root of a project (it's discovered by walking
